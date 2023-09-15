@@ -80,6 +80,11 @@ class MainActivity : ComponentActivity() {
             Text(text = "Hello Fuck")
             Spacer(Modifier.size(16.dp))
             Button(onClick = {
+                audioRecord?.run {
+                    stop()
+                    release()
+                }
+
                 val bufferSize = AudioRecord.getMinBufferSize(
                     44100,
                     AudioFormat.CHANNEL_IN_STEREO,
@@ -116,8 +121,10 @@ class MainActivity : ComponentActivity() {
             }
             Spacer(Modifier.size(16.dp))
             Button(onClick = {
+                if (audioRecord == null) return@Button
                 audioRecord?.stop()
                 audioRecord?.release()
+                audioRecord = null
             }, modifier = Modifier.size(width = 100.dp, height = 40.dp)) {
                 Text(text = "Release", fontWeight = FontWeight.W500)
             }
