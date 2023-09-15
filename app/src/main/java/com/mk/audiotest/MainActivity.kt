@@ -33,27 +33,7 @@ import com.mk.audiotest.ui.theme.AudioTestTheme
 @SuppressLint("MissingPermission")
 class MainActivity : ComponentActivity() {
 
-    private val audioRecord: AudioRecord? by lazy {
-        val bufferSize = AudioRecord.getMinBufferSize(
-            44100,
-            AudioFormat.CHANNEL_IN_STEREO,
-            AudioFormat.ENCODING_PCM_16BIT
-        )
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.RECORD_AUDIO
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            AudioRecord(
-                MediaRecorder.AudioSource.MIC,
-                44100,
-                AudioFormat.CHANNEL_IN_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                bufferSize
-            )
-        } else null
-    }
+    private var audioRecord: AudioRecord? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +80,25 @@ class MainActivity : ComponentActivity() {
             Text(text = "Hello Fuck")
             Spacer(Modifier.size(16.dp))
             Button(onClick = {
-                audioRecord
+                val bufferSize = AudioRecord.getMinBufferSize(
+                    44100,
+                    AudioFormat.CHANNEL_IN_STEREO,
+                    AudioFormat.ENCODING_PCM_16BIT
+                )
+
+                audioRecord = if (ActivityCompat.checkSelfPermission(
+                        this@MainActivity,
+                        Manifest.permission.RECORD_AUDIO
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    AudioRecord(
+                        MediaRecorder.AudioSource.MIC,
+                        44100,
+                        AudioFormat.CHANNEL_IN_STEREO,
+                        AudioFormat.ENCODING_PCM_16BIT,
+                        bufferSize
+                    )
+                } else null
             }, modifier = Modifier.size(width = 100.dp, height = 40.dp)) {
                 Text(text = "Open", fontWeight = FontWeight.W500)
             }
